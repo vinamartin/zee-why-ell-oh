@@ -1,14 +1,30 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PlanetsTile from './tiles/PlanetsTile';
 import SpeciesTile from './tiles/SpeciesTile';
 import Tooltip from '../../components/Tooltip';
 import { fillInColorScale, joinClassName } from '../../utilities/helpers';
 import { pink, red } from '../../styles/global/mixins.scss';
 import '../../styles/pages/secret-platform-prototype.scss';
+import { useSelfDestructUpdate } from '../../contexts/selfDestructContext';
 
 export default function SecretPlatformPrototype() {
   const [selfDestructCountdown, setSelfDestructCountdown] = useState();
+  const { setSelfDestructionCommenced } = useSelfDestructUpdate();
+  const [isFetched, setIsFetched] = useState({
+    planets: false,
+    species: false
+  });
   const colorScale = useRef(fillInColorScale([red, pink], 8));
+
+  useEffect(() => {
+    if (selfDestructCountdown === 0) {
+      setSelfDestructionCommenced(true);
+    } else if (isFetched.planets && isFetched.species) {
+      setTimeout(() => {
+        setSelfDestructCountdown(selfDestructCountdown ? selfDestructCountdown - 1 : 10);
+      }, 1000);
+    }
+  }, [isFetched, selfDestructCountdown, setSelfDestructionCommenced]);
 
   return (
     <div
@@ -76,25 +92,35 @@ export default function SecretPlatformPrototype() {
         </Tooltip>
       </div>
 
-      <div className="flex-container justify-between secret-platform-prototype-page-tiles-container">
-        <SpeciesTile />
-        <PlanetsTile />
+      <div className="flex-container secret-platform-prototype-page-tiles-container">
+        <SpeciesTile
+          setIsFetched={(fetched) => {
+            setIsFetched({ ...isFetched, species: fetched });
+          }}
+        />
+        <PlanetsTile
+          setIsFetched={(fetched) => {
+            setIsFetched({ ...isFetched, planets: fetched });
+          }}
+        />
       </div>
 
-      <p
-        className="self-destruct-message"
-        style={{
-          fontSize: 16 + (selfDestructCountdown > 5 ? 0 : 6 - selfDestructCountdown) * 3
-        }}
-      >
-        This prototype will self-destruct in
-        <span
-          className="time-remaining"
-          style={{ color: colorScale.current[selfDestructCountdown - 1] }}
+      {selfDestructCountdown && (
+        <p
+          className="self-destruct-message"
+          style={{
+            fontSize: 16 + (selfDestructCountdown > 5 ? 0 : 6 - selfDestructCountdown) * 3
+          }}
         >
-          {selfDestructCountdown}
-        </span>
-      </p>
+          This prototype will self-destruct in
+          <span
+            className="time-remaining"
+            style={{ color: colorScale.current[selfDestructCountdown - 1] }}
+          >
+            {selfDestructCountdown}
+          </span>
+        </p>
+      )}
     </div>
   );
 }
