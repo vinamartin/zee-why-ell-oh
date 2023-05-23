@@ -4,6 +4,7 @@ import Introduction from './pages/Introduction';
 import PageNotFound from './pages/PageNotFound';
 import SecretPlatformPrototype from './pages/prototype/SecretPlatformPrototype';
 import Yoda from './pages/Yoda';
+import { SelfDestructProvider } from './contexts/selfDestructContext';
 
 export default function App() {
   return (
@@ -23,13 +24,15 @@ export default function App() {
         </ul>
       </header>
 
-      <Router>
-        <Introduction path="/" />
-        <SecretPlatformPrototype path="secret_prototype" />
-        <PageNotFound default />
-      </Router>
+      <SelfDestructProvider>
+        <Router>
+          <Introduction path="/" />
+          <SecretPlatformPrototype path="secret_prototype" />
+          <PageNotFound default />
+        </Router>
 
-      <Yoda />
+        <Yoda />
+      </SelfDestructProvider>
     </div>
   );
 }

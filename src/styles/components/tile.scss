@@ -1,6 +1,9 @@
 .tile {
   flex: 1;
   align-self: baseline;
+  @media (max-width: 750px) {
+    min-width: 80vw;
+  }
   max-width: calc(50% - 58px);
   padding: 20px;
   margin-bottom: 0;

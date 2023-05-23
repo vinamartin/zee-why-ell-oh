@@ -206,25 +206,28 @@ export default function TetrisChart({
         }
       }
 
-      setChartSections((currentVal) => [...currentVal, [
-        <g
-          onMouseEnter={handleSectionMouseEnter}
-          onMouseLeave={handleSectionMouseLeave}
-          onClick={handleSectionClick}
-          key={genKey()}
-        >
-          {animate && (
-            <animateMotion from="100,-100" to="0,0" dur={`${50 * (i + 1)}ms`} fill="freeze" />
-          )}
-          {sectionUnits}
-          <polyline
-            data-index={i}
-            points={sectionOutline.reduce((accumulator, [xValue, yValue]) => {
-              return `${accumulator}${xValue * blockWidth},${yValue * blockLength} `;
-            }, '')}
-          />
-        </g>
-      ]]);
+      setChartSections((currentVal) => [
+        ...currentVal,
+        [
+          <g
+            onMouseEnter={handleSectionMouseEnter}
+            onMouseLeave={handleSectionMouseLeave}
+            onClick={handleSectionClick}
+            key={genKey()}
+          >
+            {animate && (
+              <animateMotion from="100,-100" to="0,0" dur={`${50 * (i + 1)}ms`} fill="freeze" />
+            )}
+            {sectionUnits}
+            <polyline
+              data-index={i}
+              points={sectionOutline.reduce((accumulator, [xValue, yValue]) => {
+                return `${accumulator}${xValue * blockWidth},${yValue * blockLength} `;
+              }, '')}
+            />
+          </g>
+        ]
+      ]);
     }
 
     let renderIndex = 0;
@@ -236,7 +239,7 @@ export default function TetrisChart({
       } else {
         clearInterval(renderLoop);
       }
-    }, 25);;
+    }, 25);
   }
 
   return (
